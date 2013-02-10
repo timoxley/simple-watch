@@ -9,6 +9,10 @@ beforeEach(function() {
   }
 })
 
+var shouldNotCall = function() {
+  throw new Error('Should not fire')
+}
+
 describe('expressions', function() {
   it('detects changes to properties', function(done) {
     watch(user, 'name', function() {
@@ -16,12 +20,14 @@ describe('expressions', function() {
     })
     user.name = 'Tim Oxley'
   })
+
   it('detects changes to simple expressions', function(done) {
     watch(user, 'age > 27', function() {
       done()
     })
     user.age++
   })
+
   it('can detect changes to arrays by watching length', function(done) {
     user.friends = [
       'Bob',
@@ -44,9 +50,7 @@ describe('expressions', function() {
   })
 
   it('can unwatch expressions/properties', function(done) {
-    watch(user, 'name', function() {
-      throw new Error('Should not fire')
-    })
+    watch(user, 'name', shouldNotCall)
     watch(user, 'age', function() {
       done()
     })
@@ -56,10 +60,8 @@ describe('expressions', function() {
       user.age++
     }, watch.interval * 2)
   })
+
   it('can unwatch a particular callback', function(done) {
-    var shouldNotCall = function() {
-      throw new Error('Should not fire')
-    }
     watch(user, 'name', shouldNotCall)
     watch(user, 'name', function() {
       setTimeout(function() {
@@ -85,10 +87,8 @@ describe('watching an object', function() {
     })
     user.name = 'Tim Oxley'
   })
+
   it('can unwatch objects', function(done) {
-    var shouldNotCall = function() {
-      throw new Error('Should not fire')
-    }
     watch(user, shouldNotCall)
     setTimeout(function() {
       watch.unwatch(user)
@@ -101,25 +101,26 @@ describe('watching an object', function() {
 
 
 describe('watching a function', function() {
-  it('runs callback when result changes', function(done) {
-    var count = 0
-    var func = function() {
+  var count, func
+  beforeEach(function() {
+    count = 0
+    func = function() {
       return count++ // first time through should be same
     }
+  })
+
+  it('runs callback when result changes', function(done) {
     watch(func, function() {
       done()
     })
   })
+
   it('can unwatch functions', function(done) {
-    var count = 0
-    var func = function() {
-      return count++ // first time through should be same
-    }
     watch(func, function() {
       throw new Error('should not fire')
     })
     watch.unwatch(func)
     setTimeout(function() { done() }, watch.interval * 2)
   })
-
 })
+
