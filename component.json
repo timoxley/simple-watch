@@ -1,0 +1,17 @@
+{
+  "name": "simple-watch",
+  "repo": "timoxley/simple-watch",
+  "description": "Fires events when objects or expressions change.",
+  "version": "0.0.1",
+  "keywords": [],
+  "dependencies": {
+    "component/to-function": "*",
+    "timoxley/assert": "*"
+  },
+  "development": {},
+  "license": "MIT",
+  "scripts": [
+    "index.js",
+    "jsondiff.js"
+  ]
+}
