@@ -5,13 +5,30 @@ var _ = require('to-function')
 var NO_PREVIOUS = {}
 
 function watch(target, expression, fn) {
-  if (typeof target === 'function') {
+
+  if (typeof expression === 'function') {
     fn = expression
+    expression = undefined
+  }
+  if (typeof target === 'function') {
     expression = target
     target = target
-  } else if (typeof expression === 'function' || !expression || !expression.length) {
-    return watchAll(target, expression)
   }
+
+
+  if (!target) {
+    throw new Error('Missing target!')
+  }
+  if (!fn) {
+    throw new Error('Missing callback!')
+  }
+  if (!expression && typeof target !== 'function') {
+    return watchAll(target, fn)
+  }
+  return watchOne(target, expression, fn)
+}
+
+function watchOne(target, expression, fn) {
   var watchMeta = {
     previous: NO_PREVIOUS,
     target: target,

@@ -13,6 +13,29 @@ var shouldNotCall = function() {
   throw new Error('Should not fire')
 }
 
+describe('error conditions', function() {
+  it('throws when given no arguments', function() {
+    assert.throws(function() {
+      watch()
+    })
+  })
+  it('throws when given no target', function() {
+    assert.throws(function() {
+      watch(undefined, 'name', function(){})
+    })
+  })
+  it('throws when given no callback', function() {
+    assert.throws(function() {
+      watch(user, 'name')
+    })
+  })
+  it('throws when given no callback or properties', function() {
+    assert.throws(function() {
+      watch(user)
+    })
+  })
+})
+
 describe('expressions', function() {
   it('detects changes to properties', function(done) {
     watch(user, 'name', function() {
