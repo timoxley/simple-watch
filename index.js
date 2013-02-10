@@ -9,7 +9,7 @@ function watch(target, expression, fn) {
     fn = expression
     expression = target
     target = target
-  } else if (arguments.length === 2) {
+  } else if (typeof expression === 'function' || !expression.length) {
     return watchAll(target, expression)
   }
   var watchMeta = {
