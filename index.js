@@ -25,20 +25,8 @@ function watch(target, expression, fn) {
   if (!expression && typeof target !== 'function') {
     return watchAll(target, fn)
   }
+  if (Array.isArray(expression)) return watchMany(target, expression, fn)
   return watchOne(target, expression, fn)
-}
-
-function watchOne(target, expression, fn) {
-  var watchMeta = {
-    previous: NO_PREVIOUS,
-    target: target,
-    expressionFn: _(expression),
-    expressionString: expression,
-    callback: fn,
-    eq: strictEqual
-  }
-  watchMeta.previous = evaluate(watchMeta)
-  watch.list.push(watchMeta)
 }
 
 watch.unwatch = function unwatch(target, expression, fn) {
@@ -59,13 +47,30 @@ watch.unwatch = function unwatch(target, expression, fn) {
   })
 }
 
-function watchAll(target, fn) {
-  var properties = Object.keys(target)
+function watchOne(target, expression, fn) {
+  var watchMeta = {
+    previous: NO_PREVIOUS,
+    target: target,
+    expressionFn: _(expression),
+    expressionString: expression,
+    callback: fn,
+    eq: strictEqual
+  }
+  watchMeta.previous = evaluate(watchMeta)
+  watch.list.push(watchMeta)
+}
+
+function watchMany(target, properties, fn) {
   properties.forEach(function(property) {
     watch(target, property, function(current, previous, item) {
       fn(property, current, previous, item)
     })
   })
+}
+
+function watchAll(target, fn) {
+  var properties = Object.keys(target)
+  return watchMany(target, properties, fn)
 }
 
 watch.interval = 10

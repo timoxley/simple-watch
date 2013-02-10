@@ -44,6 +44,16 @@ describe('expressions', function() {
     user.name = 'Tim Oxley'
   })
 
+  it('detects changes lists of properties', function(done) {
+    var count = 0
+    watch(user, ['name', 'age'], function() {
+      count++
+      user.age++
+      if (count === 2) return done()
+    })
+    user.name = 'Tim Oxley'
+  })
+
   it('detects changes to simple expressions', function(done) {
     watch(user, 'age > 27', function() {
       done()
