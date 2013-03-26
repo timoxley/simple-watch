@@ -1,4 +1,3 @@
-
 # simple watch
 
   Fires events when objects change.
@@ -7,9 +6,34 @@
 
     $ component install timoxley/simple-watch
 
-## API
+## Examples
 
+### Watch object properties
 
+```js
+var user = {name: 'Tim', age: 27}
+
+watch(user, 'name', function(current, previous) {
+  console.log('Name was '+ previous +'. Name is now '+ current +'.')
+})
+
+user.name = 'Tim Oxley'
+// => Name was Tim. Name is now Tim Oxley
+```
+
+### Watch expressions
+```js
+var user = {name: 'Tim', age: 27}
+
+watch(user, 'age > 27', function() {
+  console.log(user.name ' is now ' + user.age)
+})
+
+user.age++
+
+// => Tim is now 28
+
+``` 
 
 ## License
 
