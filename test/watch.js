@@ -1,3 +1,5 @@
+"use strict"
+
 var watch = require('simple-watch')
 var assert = require('timoxley-assert')
 
@@ -7,6 +9,10 @@ beforeEach(function() {
     name: 'Tim',
     age: 27
   }
+})
+
+afterEach(function() {
+  watch.unwatch()
 })
 
 var shouldNotCall = function() {
@@ -82,6 +88,18 @@ describe('expressions', function() {
     user.address.line1 = '3 Mistri Road'
   })
 
+  it('can unwatch everything', function(done) {
+    watch(user, 'name', shouldNotCall)
+    watch(user, 'age', shouldNotCall)
+    watch.unwatch()
+    user.name = "tim"
+    user.age++
+    user.name += user.name
+    setTimeout(function() {
+      done()
+    }, watch.interval * 2)
+  })
+
   it('can unwatch expressions/properties', function(done) {
     watch(user, 'name', shouldNotCall)
     watch(user, 'age', function() {
@@ -104,6 +122,24 @@ describe('expressions', function() {
     watch.unwatch(user, 'name', shouldNotCall)
     user.name = "tim"
   })
+  it('can unwatch objects via return value', function(done) {
+    var watcher = watch(user, 'name', shouldNotCall)
+    watch(user, 'name', function() {
+      setTimeout(function() {
+        done()
+      }, watch.interval * 2)
+    })
+    watcher.unwatch()
+    user.name = "tim"
+  })
+  it('can unwatch expressions by return value', function(done) {
+    var watcher = watch(user, 'name.length', shouldNotCall)
+    watcher.unwatch()
+    user.name += user.name
+    setTimeout(function() {
+      done()
+    }, watch.interval * 2)
+  })
 })
 
 describe('watching an object', function() {
@@ -123,15 +159,12 @@ describe('watching an object', function() {
 
   it('can unwatch objects', function(done) {
     watch(user, shouldNotCall)
-    setTimeout(function() {
-      watch.unwatch(user)
-      user.name = 'Tim Oxley'
-      user.age++
-      setTimeout(function() {done()}, watch.interval * 2)
-    }, watch.interval * 2)
+    watch.unwatch(user)
+    user.name = 'Tim Oxley'
+    user.age++
+    setTimeout(function() {done()}, watch.interval * 2)
   })
 })
-
 
 describe('watching a function', function() {
   var count, func
@@ -157,3 +190,46 @@ describe('watching a function', function() {
   })
 })
 
+describe('watching an array', function() {
+  var arr, watcher
+  beforeEach(function() {
+    arr = []
+  })
+  afterEach(function() {
+    watcher.unwatch()
+  })
+  it('does nothing is array is not changed', function(done) {
+    arr = [{a: 1}, {b: 2}, {c: 3}]
+    watcher = watch(arr, function() {
+      throw new Error('should not fire')
+    })
+    setTimeout(function() {
+      done()
+    }, watch.interval * 2)
+  })
+
+  it('detects changes to arrays of primitives', function(done) {
+    arr = [1,2,3,4,5]
+
+    watcher = watch(arr, function(before, after, obj) {
+      assert.equal(arr.length, 4)
+      done()
+    })
+    arr.pop()
+  })
+  it('detects changes to arrays of objects', function(done) {
+    arr = [{a: 1}, {b: 2}, {c: 3}]
+    watcher = watch(arr, function(before, after, obj) {
+      assert.equal(arr.length, 2)
+      done()
+    })
+    arr.pop()
+  })
+  it('detects changes to contents of arrays of objects', function(done) {
+    arr = [{a: 1}, {b: 2}, {c: 3}]
+    watcher = watch(arr, function(before, after, obj) {
+      done()
+    })
+    arr[0].a = 2
+  })
+})

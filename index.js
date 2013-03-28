@@ -15,21 +15,22 @@ function watch(target, expression, fn) {
     target = target
   }
 
-
   if (!target) {
     throw new Error('Missing target!')
   }
   if (!fn) {
     throw new Error('Missing callback!')
   }
-  if (!expression && typeof target !== 'function') {
-    return watchAll(target, fn)
+  if (!expression) {
+    if (Array.isArray(target)) return watchArray(target, fn)
+    if (typeof target !== 'function') return watchAll(target, fn)
   }
   if (Array.isArray(expression)) return watchMany(target, expression, fn)
   return watchOne(target, expression, fn)
 }
 
 watch.unwatch = function unwatch(target, expression, fn) {
+  if (!arguments.length) return watch.list = []
   var matches = watch.list.filter(function(item) {
     return item.target === target
   })
@@ -58,14 +59,30 @@ function watchOne(target, expression, fn) {
   }
   watchMeta.previous = evaluate(watchMeta)
   watch.list.push(watchMeta)
+  return {
+    unwatch: watch.unwatch.bind(watch, target, expression, fn)
+  }
 }
 
 function watchMany(target, properties, fn) {
-  properties.forEach(function(property) {
-    watch(target, property, function(current, previous, item) {
+  var watchInfo = properties.map(function(property) {
+    var invoke = function(current, previous, item) {
       fn(property, current, previous, item)
-    })
+    }
+    watch(target, property, invoke)
+    return {
+      target: target,
+      property: property,
+      invoke: invoke
+    }
   })
+  return {
+    unwatch: function() {
+      watchInfo.forEach(function(info) {
+        watch.unwatch(info.target, info.property, info.invoke)
+      })
+    }
+  }
 }
 
 function watchAll(target, fn) {
@@ -111,6 +128,12 @@ var timeout = start()
 
 function stop() {
   return clearTimeout(timeout)
+}
+
+function watchArray(array, fn) {
+  return watchOne(array, function() {
+    return JSON.stringify(array)
+  }, fn)
 }
 
 module.exports.start = start
