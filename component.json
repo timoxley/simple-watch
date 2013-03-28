@@ -5,7 +5,7 @@
   "version": "0.0.2",
   "keywords": [],
   "dependencies": {
-    "component/to-function": "*",
+    "component/to-function": "*"
   },
   "development": {
     "timoxley/assert": "*"
