@@ -11,6 +11,8 @@
 ### Watch object properties
 
 ```js
+var watch = require('simple-watch')()
+
 var user = {name: 'Tim', age: 27}
 
 watch(user, 'name', function(current, previous) {
