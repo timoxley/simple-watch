@@ -1,0 +1,29 @@
+{
+  "name": "simple-watch",
+  "version": "0.0.1",
+  "description": "Fires events when objects change.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/timoxley/simple-watch.git"
+  },
+  "author": "",
+  "license": "BSD",
+  "readmeFilename": "Readme.md",
+  "gitHead": "2fbcc179779b04d07432d252e8fe8c70020af19e",
+  "bugs": {
+    "url": "https://github.com/timoxley/simple-watch/issues"
+  },
+  "dependencies": {
+    "to-function": "~1.2.0"
+  },
+  "devDependencies": {
+    "component": "~0.16.3"
+  }
+}
