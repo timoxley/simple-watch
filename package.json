@@ -7,14 +7,14 @@
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "`npm bin`/mocha test"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/timoxley/simple-watch.git"
   },
-  "author": "",
-  "license": "BSD",
+  "author": "Tim Oxley",
+  "license": "MIT",
   "readmeFilename": "Readme.md",
   "gitHead": "2fbcc179779b04d07432d252e8fe8c70020af19e",
   "bugs": {
@@ -24,6 +24,7 @@
     "to-function": "~1.2.0"
   },
   "devDependencies": {
-    "component": "~0.16.3"
+    "component": "~0.16.3",
+    "mocha": "~1.10.0"
   }
 }
