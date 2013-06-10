@@ -1,12 +1,14 @@
 "use strict"
 
 if (typeof window === "undefined") {
-  var watch = require('../')
+  var Watch = require('../')
   var assert = require('assert')
 } else {
-  var watch = require('simple-watch')
+  var Watch = require('simple-watch')
   var assert = require('timoxley-assert')
 }
+
+var watch = Watch()
 
 var user
 beforeEach(function() {
@@ -258,6 +260,16 @@ describe('poll frequency', function() {
     watcher = watch(user, 'queriedAgo()', function(property) {
       count++
       if (count > 1 && property < watch.interval) throw new Error('polled too quickly')
+      if (count > 5) done()
+    })
+  })
+
+  it('can take a custom poll interval', function(done) {
+    var count = 0
+    var slowWatch = Watch(100)
+    slowWatch(user, 'queriedAgo()', function(property) {
+      count++
+      if (count > 1 && property < slowWatch.interval) throw new Error('polled too quickly')
       if (count > 5) done()
     })
   })
