@@ -1,7 +1,7 @@
 {
   "name": "simple-watch",
-  "version": "0.0.3",
-  "description": "Fires events when objects change.",
+  "version": "0.0.4",
+  "description": "Trigger callbacks when objects, properties or expressions change.",
   "main": "index.js",
   "directories": {
     "test": "test"

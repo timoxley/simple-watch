@@ -2,7 +2,7 @@
   "name": "simple-watch",
   "repo": "timoxley/simple-watch",
   "description": "Fires events when objects or expressions change.",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "keywords": [],
   "dependencies": {
     "component/to-function": "*"
