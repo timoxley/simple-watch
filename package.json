@@ -1,6 +1,6 @@
 {
   "name": "simple-watch",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Fires events when objects change.",
   "main": "index.js",
   "directories": {
