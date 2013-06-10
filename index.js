@@ -1,6 +1,7 @@
 "use strict"
 
 var _ = require('to-function')
+var equals = require('equals')
 
 var NO_PREVIOUS = {}
 
@@ -88,7 +89,7 @@ module.exports = function(interval) {
       expressionFn: _(expression),
       expressionString: expression,
       callback: fn,
-      eq: strictEqual
+      eq: deepEqual
     }
     watchMeta.previous = evaluate(watchMeta)
     watch.list.push(watchMeta)
@@ -131,6 +132,10 @@ module.exports = function(interval) {
 
   function strictEqual(a, b) {
     return a === b
+  }
+
+  function deepEqual(a, b) {
+    return equals(a, b)
   }
 
   function tick() {

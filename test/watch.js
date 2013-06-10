@@ -163,7 +163,19 @@ describe('watching an object', function() {
     })
     user.name = 'Tim Oxley'
   })
-
+  it('does nothing if content is equivalent', function(done) {
+    var list = {items: [1,2,3]}
+    var watcher = watch(list, function() {
+      throw new Error('should not fire')
+    })
+    setTimeout(function() {
+      watcher.unwatch()
+      done()
+    }, watch.interval * 9)
+    setTimeout(function() {
+      list.items = [1,2,3]
+    })
+  })
   it('can unwatch objects', function(done) {
     watch(user, shouldNotCall)
     watch.unwatch(user)
@@ -206,13 +218,26 @@ describe('watching an array', function() {
     watcher.unwatch()
   })
   it('does nothing if array is not changed', function(done) {
-    arr = [{a: 1}, {b: 2}, {c: 3}]
+    arr = [{a: 1}, 'stuff', 3]
     watcher = watch(arr, function() {
       throw new Error('should not fire')
     })
     setTimeout(function() {
       done()
-    }, watch.interval * 2)
+    }, watch.interval * 4)
+  })
+
+  it('does nothing if content is equivalent', function(done) {
+    arr = [{a: 1}, 'stuff', 3]
+    watcher = watch(arr, function() {
+      throw new Error('should not fire')
+    })
+    setTimeout(function() {
+      done()
+    }, watch.interval * 9)
+    setTimeout(function() {
+      arr = [{a: 1}, 'stuff', 3]
+    })
   })
 
   it('detects changes to arrays of primitives', function(done) {

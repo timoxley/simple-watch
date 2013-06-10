@@ -21,7 +21,8 @@
     "url": "https://github.com/timoxley/simple-watch/issues"
   },
   "dependencies": {
-    "to-function": "~1.2.0"
+    "to-function": "~1.2.0",
+    "equals": "~0.2.0"
   },
   "devDependencies": {
     "component": "~0.16.3",

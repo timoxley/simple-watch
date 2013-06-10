@@ -5,7 +5,8 @@
   "version": "0.0.4",
   "keywords": [],
   "dependencies": {
-    "component/to-function": "*"
+    "component/to-function": "*",
+    "jkroso/equals": "*"
   },
   "development": {
     "timoxley/assert": "*"
