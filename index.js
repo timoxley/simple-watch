@@ -4,34 +4,64 @@ var _ = require('to-function')
 
 var NO_PREVIOUS = {}
 
-function watch(target, expression, fn) {
 
+/**
+ * Watch a property on target, 
+ * or a function.
+ */
+function watch(target, expression, fn) {
   if (typeof expression === 'function') {
     fn = expression
     expression = undefined
   }
+
   if (typeof target === 'function') {
     expression = target
-    target = target
   }
 
   if (!target) {
     throw new Error('Missing target!')
   }
+
   if (!fn) {
     throw new Error('Missing callback!')
   }
+
+  // handle watch(target, fn)
   if (!expression) {
     if (Array.isArray(target)) return watchArray(target, fn)
     if (typeof target !== 'function') return watchAll(target, fn)
   }
+
+  // handle watch(target, ['prop1', 'prop2'], fn)
   if (Array.isArray(expression)) return watchMany(target, expression, fn)
+
+  // handle watch(target, expression, fn)
   return watchOne(target, expression, fn)
 }
 
+/**
+ * Remove watcher from watch list, if it matches
+ * all of supplied target, expression, or fn
+ *
+ * @param {Mixed} target remove watchers on `target`. If only argument supplied, remove all watchers on target.
+ * @param {Mixed} expression remove watchers on `target` that also match `expression`.
+ * @param {Function} fn remove watchers on `target` matching this callback.
+ * @api private
+ */
+
 watch.unwatch = function unwatch(target, expression, fn) {
   if (!arguments.length) return watch.list = []
-  var matches = watch.list.filter(function(item) {
+  var matches = findWatchers(target, expression, fn)
+  watch.list = watch.list.filter(function(item) {
+    return !~matches.indexOf(item)
+  })
+}
+
+function findWatchers(target, expression, fn) {
+  if (!arguments.length) return []
+  // find watcher matching target/expression/fn combo
+  return watch.list.filter(function(item) {
     return item.target === target
   })
   .filter(function(item) {
@@ -42,9 +72,6 @@ watch.unwatch = function unwatch(target, expression, fn) {
   .filter(function(item) {
     if (!fn) return true // skip if no expression
     return item.callback === fn
-  })
-  watch.list = watch.list.filter(function(item) {
-    return !~matches.indexOf(item)
   })
 }
 

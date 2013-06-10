@@ -1,7 +1,12 @@
 "use strict"
 
-var watch = require('simple-watch')
-var assert = require('timoxley-assert')
+if (typeof window === "undefined") {
+  var watch = require('../')
+  var assert = require('assert')
+} else {
+  var watch = require('simple-watch')
+  var assert = require('timoxley-assert')
+}
 
 var user
 beforeEach(function() {
@@ -198,7 +203,7 @@ describe('watching an array', function() {
   afterEach(function() {
     watcher.unwatch()
   })
-  it('does nothing is array is not changed', function(done) {
+  it('does nothing if array is not changed', function(done) {
     arr = [{a: 1}, {b: 2}, {c: 3}]
     watcher = watch(arr, function() {
       throw new Error('should not fire')
@@ -231,5 +236,29 @@ describe('watching an array', function() {
       done()
     })
     arr[0].a = 2
+  })
+})
+
+describe('poll frequency', function() {
+  var watcher
+  beforeEach(function() {
+    user.queriedAgo = function track() {
+      var previous = track.current || 0
+      track.current = Date.now()
+      return track.current - previous
+    }
+  })
+  afterEach(function() {
+    watcher.unwatch()
+    delete user.queriedAgo
+  })
+  it('only polls for changes every n milliseconds', function(done) {
+    var count = 0
+
+    watcher = watch(user, 'queriedAgo()', function(property) {
+      count++
+      if (count > 1 && property < watch.interval) throw new Error('polled too quickly')
+      if (count > 5) done()
+    })
   })
 })
