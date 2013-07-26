@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "`npm bin`/mocha test"
+    "test": "mocha test/watch.js"
   },
   "repository": {
     "type": "git",
