@@ -2,6 +2,8 @@
 
   Fires events when objects change.
 
+[![Build Status](https://travis-ci.org/timoxley/simple-watch.png?branch=master)](https://travis-ci.org/timoxley/simple-watch)
+
 ## Installation
 
     $ component install timoxley/simple-watch
