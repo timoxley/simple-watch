@@ -308,7 +308,7 @@ describe('poll frequency', function() {
   it('can take a custom poll interval', function(done) {
     var count = 0
     var start = Date.now()
-    var slowWatch = Watch(50)
+    var slowWatch = Watch(100)
     slowWatch(user, 'queriedAgo()', function(property) {
       if (Date.now() - start < slowWatch.interval) throw new Error('polled too quickly: ' + (Date.now() - start) + ' < ' + slowWatch.interval)
       start = Date.now()
