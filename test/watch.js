@@ -205,7 +205,23 @@ describe('watching a function', function() {
       throw new Error('should not fire')
     })
     watch.unwatch(func)
-    setTimeout(function() { done() }, watch.interval * 2)
+    setTimeout(function() { done() }, watch.interval * 3)
+  })
+
+  it('can unwatch custom check intervals', function(done) {
+    var called = false
+    user.doError = function() {
+      // will call once.
+      if (!called) return called = true
+      throw new Error('should not fire')
+    }
+
+    var slowWatch = Watch(100)
+    slowWatch(user, 'doError()', function(property) {
+      throw new Error('callback should not fire')
+    })
+    slowWatch.unwatch(user, 'doError()')
+    setTimeout(function() { done() }, slowWatch.interval * 2)
   })
 })
 
@@ -277,7 +293,6 @@ describe('poll frequency', function() {
   })
   afterEach(function() {
     watcher.unwatch()
-    delete user.queriedAgo
   })
   it('only polls for changes every n milliseconds', function(done) {
     var count = 0
