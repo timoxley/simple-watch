@@ -299,6 +299,7 @@ describe('poll frequency', function() {
     var count = 0
     var start = Date.now()
     watcher = watch(user, 'queriedAgo()', function(property) {
+      if (count++ == 0) return start = Date.now() // skip first call
       if (Date.now() - start < watch.interval) throw new Error('polled too quickly: ' + (Date.now() - start) + ' < ' + watch.interval)
       start = Date.now()
       if (count++ > 5) done()
@@ -310,6 +311,7 @@ describe('poll frequency', function() {
     var start = Date.now()
     var slowWatch = Watch(100)
     slowWatch(user, 'queriedAgo()', function(property) {
+      if (count++ == 0) return start = Date.now() // skip first call
       if (Date.now() - start < slowWatch.interval) throw new Error('polled too quickly: ' + (Date.now() - start) + ' < ' + slowWatch.interval)
       start = Date.now()
       if (count++ > 5) done()
