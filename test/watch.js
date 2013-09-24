@@ -296,21 +296,22 @@ describe('poll frequency', function() {
   })
   it('only polls for changes every n milliseconds', function(done) {
     var count = 0
-
+    var start = Date.now()
     watcher = watch(user, 'queriedAgo()', function(property) {
-      count++
-      if (count > 1 && property < watch.interval) throw new Error('polled too quickly')
-      if (count > 5) done()
+      if (Date.now() - start < watch.interval) throw new Error('polled too quickly: ' + Date.now() - start + ' < ' + watch.interval)
+      start = Date.now()
+      if (count++ > 5) done()
     })
   })
 
   it('can take a custom poll interval', function(done) {
     var count = 0
     var slowWatch = Watch(50)
+    var start = Date.now()
     slowWatch(user, 'queriedAgo()', function(property) {
-      count++
-      if (count > 1 && property < slowWatch.interval) throw new Error('polled too quickly')
-      if (count > 5) done()
+      if (Date.now() - start < slowWatch.interval) throw new Error('polled too quickly: ' + Date.now() - start + ' < ' + slowWatch.interval)
+      start = Date.now()
+      if (count++ > 5) done()
     })
   })
 })
