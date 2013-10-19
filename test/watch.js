@@ -32,16 +32,19 @@ describe('error conditions', function() {
       watch()
     })
   })
+
   it('throws when given no target', function() {
     assert.throws(function() {
       watch(undefined, 'name', function(){})
     })
   })
+
   it('throws when given no callback', function() {
     assert.throws(function() {
       watch(user, 'name')
     })
   })
+
   it('throws when given no callback or properties', function() {
     assert.throws(function() {
       watch(user)
@@ -129,6 +132,7 @@ describe('expressions', function() {
     watch.unwatch(user, 'name', shouldNotCall)
     user.name = "tim"
   })
+
   it('can unwatch objects via return value', function(done) {
     var watcher = watch(user, 'name', shouldNotCall)
     watch(user, 'name', function() {
@@ -139,6 +143,7 @@ describe('expressions', function() {
     watcher.unwatch()
     user.name = "tim"
   })
+
   it('can unwatch expressions by return value', function(done) {
     var watcher = watch(user, 'name.length', shouldNotCall)
     watcher.unwatch()
@@ -163,6 +168,7 @@ describe('watching an object', function() {
     })
     user.name = 'Tim Oxley'
   })
+
   it('does nothing if content is equivalent', function(done) {
     var list = {items: [1,2,3]}
     var watcher = watch(list, function() {
@@ -176,6 +182,7 @@ describe('watching an object', function() {
       list.items = [1,2,3]
     })
   })
+
   it('can unwatch objects', function(done) {
     watch(user, shouldNotCall)
     watch.unwatch(user)
@@ -227,12 +234,15 @@ describe('watching a function', function() {
 
 describe('watching an array', function() {
   var arr, watcher
+
   beforeEach(function() {
     arr = []
   })
+
   afterEach(function() {
     watcher.unwatch()
   })
+
   it('does nothing if array is not changed', function(done) {
     arr = [{a: 1}, 'stuff', 3]
     watcher = watch(arr, function() {
@@ -265,6 +275,7 @@ describe('watching an array', function() {
     })
     arr.pop()
   })
+
   it('detects changes to arrays of objects', function(done) {
     arr = [{a: 1}, {b: 2}, {c: 3}]
     watcher = watch(arr, function(before, after, obj) {
@@ -273,6 +284,7 @@ describe('watching an array', function() {
     })
     arr.pop()
   })
+
   it('detects changes to contents of arrays of objects', function(done) {
     arr = [{a: 1}, {b: 2}, {c: 3}]
     watcher = watch(arr, function(before, after, obj) {
@@ -284,6 +296,7 @@ describe('watching an array', function() {
 
 describe('poll frequency', function() {
   var watcher
+
   beforeEach(function() {
     user.queriedAgo = function track() {
       var previous = track.current || 0
@@ -291,10 +304,12 @@ describe('poll frequency', function() {
       return track.current - previous
     }
   })
+
   afterEach(function(done) {
     watcher.unwatch()
     setTimeout(done)
   })
+
   it('only polls for changes every n milliseconds', function(done) {
     var count = 0
     var start = Date.now()
